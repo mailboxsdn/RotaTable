@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rota App - Sortable</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddd; flex-wrap: wrap; }
+        select, input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; flex-grow: 1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: #007bff; color: white; cursor: pointer; position: relative; padding: 12px; text-align: left; user-select: none; }
+        th:hover { background-color: #0056b3; }
+        /* Add sort arrows */
+        th::after { content: ' ↕'; font-size: 0.8em; opacity: 0.5; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f8f9fa; }
+        .shift-badge { background: #e3f2fd; color: #0d47a1; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.9em; }
+        .off { color: #bbb; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="text-align:center">Staff Rota Filter</h2>
+    
+    <div class="controls">
+        <select id="dateSelect" onchange="renderTable()">
+            <!-- Generated via JS -->
+        </select>
+        <input type="text" id="nameSearch" placeholder="Search by name..." onkeyup="renderTable()">
+    </div>
+
+    <table id="rotaTable">
+        <thead>
+            <tr>
+                <th onclick="setSort('name')">Employee Name</th>
+                <th onclick="setSort('shift')">Shift Code</th>
+            </tr>
+        </thead>
+        <tbody id="rotaBody"></tbody>
+    </table>
+</div>
+
+<script>
+    const rotaData = [
+        { name: "Muhammad Tawheed Hussainy Ali", shifts: ["N8","N8","N8","N8","X","AL","0","0","E5","E5","E5","E5","AL","0","E5","X","E5","AL","E25","E25","E25","E25","X","X","X","E25","E25","E25"] },
+        { name: "Ibrahim Habiballa Idris Fadol", shifts: ["M1","E5","E5","X","X","E5","E5","M1","N8","N8","X","X","E5","E5","N8","X","AL","E25","MAS/E25","X","N1","0","E12","X","E12","X","X","0"] },
+        { name: "Mustafa Mohamed Bashir", shifts: ["M1","E5","E5","E5","E5","X","0","0","AL","AL","AL","AL","AL","0","0","AL","AL","AL","AL","AL","0","0","X","N1","X","N11","X","N1"] },
+        { name: "Salah Bourma Salih Khamis", shifts: ["M1","X","X","M1","N8","N8","0","0","E5","E5","E5","E5","E5","E5","0","E5","E5","M9","E12","X","E12","0","N1","X","X","X","N11","0"] },
+        { name: "Elraiah Abass Yousif Eltiraifi", shifts: ["N8","N8","X","X","M1","M1","E5","E5","SL","SL","X","M1","M1","M1","0","E5","E5","X","X","N1","0","0","X","X","X","X","X","0"] },
+        { name: "Tamer Sayed Mahmoud Ruby", shifts: ["E5","M1","M1","E5","M1","X","0","E5","E5","X","N8","N8","X","0","M1","M1","M1","E25","N1","X","0","E25","X","X","E12","X","X","N1"] },
+        { name: "Elshaimaa Ahmed Elhamady", shifts: ["0","X","E5","E5","E5","E5","M1","0","M1","M1","M1","E5","X","M1","M1","N8","X","E25","X","X","M9","N1","X","N1","X","X","E12","0"] },
+        { name: "Amina Abdelrazek Mohamed", shifts: ["0","M1","M1","E5","E5","TL","0","0","M1","M1","AL","AL","AL","0","0","E5","N8","N11","X","X","0","E12","X","E14","N1","X","X","E12"] },
+        { name: "Jehan E. Sleman Al Shurafani", shifts: ["0","M1","E5","TL","TL","E5","M1","M1","X","X","M1","M1","N8","N8","0","X","AL","AL","M9","M9","M27","M9","N11","X","X","E14","N11","0"] },
+        { name: "Nagwa Gafer Abd El Rahman", shifts: ["E5","E5","X","M1","M1","TL","N8","N8","X","X","E5","M1","M1","0","E5","E5","X","X","X","E12","0","0","E12","E25","N11","N1","X","0"] },
+        { name: "Hala Aamir Abdelraouf Ahmed", shifts: ["M1","M1","M1","M1","M1","M1","0","E5","X","E5","E5","E5","X","0","M1","M1","M1","X","X","E25","0","M27","E14","E25","M9","X","M9","M9"] },
+        { name: "Yassir Osman Mohamed Ali", shifts: ["0","X","AL","AL","E5","E5","E5","M1","M1","M1","X","X","E5","E5","E5","AL","X","E14","M27","X","M9","0","M27","M27","M27","M27","X","E14"] },
+        { name: "Mohammed Elfatih Malik", shifts: ["E5","E5","E5","E5","X","M1","M1","0","X","X","M1","M1","M1","M1","0","E5","E5","E25","E25","X","E25","E14","E25","E25","X","M9","E25","0"] },
+        { name: "Safa Ibrahim Qousi", shifts: ["0","M1","M1","M1","M1","M1","0","M1","M1","M1","M1","M1","M1","0","N8","X","M1","M9","M9","M9","N11","0","M9","M9","M9","M9","M9","0"] },
+        { name: "Ayman Abed Nassar", shifts: ["0","X","M1","M1/N8","X","X"," ","E5","E5","E5","E5","E5","E5","0","M1","M1","M1","N11","N11","N11","0","0","X","X","X","E12","E12","M9"] },
+        { name: "Ashok Abraham Varghese", shifts: ["E5","E5","N8","X","N8","SL"," ","N8","N8","N8","X","X","N8","N8","0","X","X","E14","E14","E14","E14","M9","X","E14","E25","E25","RS","M9"] },
+        { name: "Mariam Awad Alneyadi", shifts: ["0","M1","M1","M1","AC","M1","0","0","M1","M1","M1","AC","M1","0","E5","M1","M1","M27","AC","M27","0","M9","M27","M27","M27","AC","M27","0"] }
+    ];
+
+    let currentSort = { column: 'name', asc: true };
+
+    // Setup dates 1-28
+    const select = document.getElementById('dateSelect');
+    for (let i = 1; i <= 28; i++) {
+        let opt = document.createElement('option');
+        opt.value = i - 1;
+        opt.innerHTML = `Date: Feb ${i}`;
+        select.appendChild(opt);
+    }
+
+    function setSort(col) {
+        if (currentSort.column === col) {
+            currentSort.asc = !currentSort.asc;
+        } else {
+            currentSort.column = col;
+            currentSort.asc = true;
+        }
+        renderTable();
+    }
+
+    function renderTable() {
+        const dayIdx = parseInt(document.getElementById('dateSelect').value);
+        const term = document.getElementById('nameSearch').value.toLowerCase();
+        const tbody = document.getElementById('rotaBody');
+        
+        // 1. Filter
+        let filtered = rotaData.filter(emp => emp.name.toLowerCase().includes(term));
+
+        // 2. Sort logic
+        filtered.sort((a, b) => {
+            let valA = currentSort.column === 'name' ? a.name : (a.shifts[dayIdx] || "");
+            let valB = currentSort.column === 'name' ? b.name : (b.shifts[dayIdx] || "");
+            
+            // Clean values for better sorting (treat spaces/zeros as empty)
+            if (valA === "0" || valA === " ") valA = "ZZZ"; // Push "Off" to bottom
+            if (valB === "0" || valB === " ") valB = "ZZZ";
+
+            let comparison = valA.localeCompare(valB);
+            return currentSort.asc ? comparison : -comparison;
+        });
+
+        // 3. Draw
+        tbody.innerHTML = filtered.map(emp => {
+            const shift = emp.shifts[dayIdx] || "-";
+            const isOff = ["X", "0", " ", "AL"].includes(shift);
+            return `<tr>
+                <td>${emp.name}</td>
+                <td><span class="${isOff ? 'off' : 'shift-badge'}">${shift}</span></td>
+            </tr>`;
+        }).join('');
+    }
+
+    renderTable(); // Initial load
+</script>
+
+</body>
+</html>
