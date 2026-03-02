@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramadan Rota PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="pwa-container">
+        <header>
+            <h1>Staff Rota</h1>
+            <div class="filter-group">
+                <input type="date" id="date-select" value="2026-03-02">
+                <input type="text" id="staff-search" placeholder="Search name...">
+            </div>
+        </header>
+
+        <main id="shift-list" class="shift-card-container">
+            </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>

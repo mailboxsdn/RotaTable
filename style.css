@@ -1,0 +1,73 @@
+﻿:root {
+    --bg-color: #f4f7f9;
+    --card-bg: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+}
+
+.pwa-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    flex: 1;
+}
+
+.shift-card-container {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.shift-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.staff-info h4 { margin: 0; color: #333; }
+.shift-category { font-size: 0.8rem; font-weight: bold; }
+.shift-time { font-size: 1.1rem; font-weight: bold; text-align: right; }
+.duration { font-size: 0.75rem; display: block; opacity: 0.7; }
+
+/* Legend Colors */
+.shift-card[data-code="M9"], .shift-card[data-code="M27"] { background-color: #f8cbad; border-left: 8px solid #f4b084; }
+.shift-card[data-code="RS"], .shift-card[data-code="E14"] { background-color: #c65911; color: white; border-left: 8px solid #833c0c; }
+.shift-card[data-code="RS"] .shift-time, .shift-card[data-code="E14"] .shift-time { color: white; }
+.shift-card[data-code="E12"] { background-color: #fce4d6; border-left: 8px solid #f8cbad; }
+.shift-card[data-code="E25"] { background-color: #5b9bd5; color: white; border-left: 8px solid #2f75b5; }
+.shift-card[data-code="N1"] { background-color: #ffccff; border-left: 8px solid #cc99ff; }
+.shift-card[data-code="N11"] { background-color: #ffff00; border-left: 8px solid #ffd966; }
+.shift-card.off { background-color: #e9ecef; color: #6c757d; border-left: 8px solid #adb5bd; opacity: 0.8; }

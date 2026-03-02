@@ -1,0 +1,17 @@
+﻿{
+  "name": "Staff Rota - Ramadan 2026",
+  "short_name": "Rota",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#2c3e50",
+  "theme_color": "#2c3e50",
+  "description": "Daily staff shift schedule with Ramadan timings.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2693/2693507.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
