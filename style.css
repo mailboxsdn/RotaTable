@@ -6,6 +6,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);
+    font-size: 12px;
     margin: 0;
     padding: 0;
 }
@@ -70,4 +71,5 @@ input {
 .shift-card[data-code="E25"] { background-color: #5b9bd5; color: white; border-left: 8px solid #2f75b5; }
 .shift-card[data-code="N1"] { background-color: #ffccff; border-left: 8px solid #cc99ff; }
 .shift-card[data-code="N11"] { background-color: #ffff00; border-left: 8px solid #ffd966; }
+
 .shift-card.off { background-color: #e9ecef; color: #6c757d; border-left: 8px solid #adb5bd; opacity: 0.8; }
